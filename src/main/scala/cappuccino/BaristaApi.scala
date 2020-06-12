@@ -10,7 +10,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 final case class Cappuccino(value: String)
-final case class ApiConfig(httpPort: Int, espressoApiUrl: String, foamApiUrl: String)
+final case class ApiConfig(
+    httpPort: Int,
+    espressoApiUrl: String,
+    foamApiUrl: String
+)
 
 final class BaristaApi(apiConfig: ApiConfig) {
   private val espressoClient = new EspressoClient(apiConfig.espressoApiUrl)
@@ -44,8 +48,14 @@ final class BaristaApi(apiConfig: ApiConfig) {
       foam         <- foamClient.foam(FoamableLiquid("oat milk"))
     } yield combine(orderId, espresso, foam)
 
-  private def combine(orderId: Long, espresso: Espresso, foam: Foam): Cappuccino = {
+  private def combine(
+      orderId: Long,
+      espresso: Espresso,
+      foam: Foam
+  ): Cappuccino = {
     println(s"[${threadName()}] combining ${espresso.value} and ${foam.value}")
-    Cappuccino(s"order #$orderId: cappuccino from ${espresso.value} and ${foam.value}")
+    Cappuccino(
+      s"order #$orderId: cappuccino from ${espresso.value} and ${foam.value}"
+    )
   }
 }

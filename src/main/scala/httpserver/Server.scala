@@ -17,7 +17,8 @@ class Server(port: Int, router: Router) extends Closeable {
 
   private val executor = Executors
     .newSingleThreadExecutor(new NamedThreadFactory("web-server-pool"))
-  private implicit val executionContext: ExecutionContext = ExecutionContext.fromExecutor(executor)
+  private implicit val executionContext: ExecutionContext =
+    ExecutionContext.fromExecutor(executor)
 
   private val server = HttpServer.create(new InetSocketAddress(port), 0)
   server.setExecutor(executor)

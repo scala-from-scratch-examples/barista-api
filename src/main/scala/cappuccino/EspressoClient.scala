@@ -13,7 +13,8 @@ private[cappuccino] final case class Espresso(value: String)
 private[cappuccino] final class EspressoClient(baseUrl: String) {
   private val httpClient = new HttpClient(baseUrl)
 
-  def grind(coffeeBeans: CoffeeBeans): Future[GroundCoffee] = httpClient
+  def grind(coffeeBeans: CoffeeBeans): Future[GroundCoffee] =
+    httpClient
       .get(s"/coffee/${HttpClient.encode(coffeeBeans.value)}/ground")
       .flatMap(HttpClient.ifOk(GroundCoffee))
 
