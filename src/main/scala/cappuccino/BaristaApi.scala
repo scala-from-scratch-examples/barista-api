@@ -49,7 +49,7 @@ final class BaristaApi(apiConfig: ApiConfig) {
       ground       <- espressoClient.grind(CoffeeBeans("arabica beans"))
       tampedCoffee <- espressoClient.tamp(ground)
       espresso     <- espressoClient.brew(tampedCoffee)
-    } yield Espresso(s"order #$orderId: $espresso")
+    } yield Espresso(s"order #$orderId: ${espresso.value}")
 
   private def prepareCappuccinoSequentially(orderId: Long): Future[Cappuccino] =
     for {
