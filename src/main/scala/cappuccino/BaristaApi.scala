@@ -25,20 +25,31 @@ final class BaristaApi(apiConfig: ApiConfig) {
       Future.successful {
         ok(
           """
-        |Welcome to the Scala from Scratch barista API!
-        |
-        |How are you? Would you like to order a cappuccino?
-        |
-        |POST /barista/cappuccino/new
+            |Welcome to the Scala from Scratch barista API!
+            |
+            |How are you? We serve espresso and cappuccino:
+            |
+            |POST /barista/order/:orderNumber/espresso
+            |POST /barista/order/:orderNumber/cappuccino
       """.stripMargin
         )
       }
-    case POST() ~> Path("barista", "cappuccino", "new", LongVar(orderId)) =>
+    case POST() ~> Path("barista", "order", LongVar(orderId), "espresso") =>
+      prepareEspresso(orderId)
+        .map(espresso => ok(espresso.value))
+    case POST() ~> Path("barista", "order", LongVar(orderId), "cappuccino") =>
       prepareCappuccinoSequentially(orderId)
         .map(cappuccino => ok(cappuccino.value))
   }
 
   def launchServer(): Server = Server.start(apiConfig.httpPort, router)
+
+  private def prepareEspresso(orderId: Long): Future[Espresso] =
+    for {
+      ground       <- espressoClient.grind(CoffeeBeans("arabica beans"))
+      tampedCoffee <- espressoClient.tamp(ground)
+      espresso     <- espressoClient.brew(tampedCoffee)
+    } yield Espresso(s"order #$orderId: $espresso")
 
   private def prepareCappuccinoSequentially(orderId: Long): Future[Cappuccino] =
     for {
