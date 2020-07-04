@@ -5,6 +5,7 @@ import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse.BodyHandlers
 import java.net.http._
 import java.time.Duration
+import _root_.concurrent.threadName
 
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success}
@@ -42,9 +43,11 @@ final class HttpClient(baseUrl: String) {
   private def sendRequest(
       request: HttpRequest
   ): Future[HttpResponse[String]] = {
+    println(s"[${threadName()}] request ${request.method()} ${request.uri().getPath()}")
     def responseFuture  = client.sendAsync(request, BodyHandlers.ofString())
     val responsePromise = Promise[HttpResponse[String]]()
     responseFuture.whenComplete { (response, throwable) =>
+      println(s"[${threadName()}] response ${request.method()} ${request.uri().getPath()}")
       if (throwable != null)
         responsePromise.complete(Failure(throwable))
       else responsePromise.complete(Success(response))
