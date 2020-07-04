@@ -1,16 +1,16 @@
-package cappuccino
+package barista
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import httpclient.HttpClient
 
-private[cappuccino] final case class CoffeeBeans(value: String)
-private[cappuccino] final case class GroundCoffee(value: String)
-private[cappuccino] final case class TampedCoffee(value: String)
-private[cappuccino] final case class Espresso(value: String)
+final case class CoffeeBeans(value: String)
+final case class GroundCoffee(value: String)
+final case class TampedCoffee(value: String)
+final case class Espresso(value: String)
 
-private[cappuccino] final class EspressoClient(baseUrl: String) {
+final class EspressoClient(baseUrl: String) {
   private val httpClient = new HttpClient(baseUrl)
 
   def grind(coffeeBeans: CoffeeBeans): Future[GroundCoffee] =

@@ -1,4 +1,4 @@
-package cappuccino
+package barista
 
 import concurrent.threadName
 import fitzgerald.Methods._
@@ -38,35 +38,15 @@ final class BaristaApi(apiConfig: ApiConfig) {
       prepareEspresso(orderId)
         .map(espresso => ok(espresso.value))
     case POST() ~> Path("barista", "order", LongVar(orderId), "cappuccino") =>
-      prepareCappuccinoSequentially(orderId)
+      prepareCappuccino(orderId)
         .map(cappuccino => ok(cappuccino.value))
   }
 
   def launchServer(): Server = Server.start(apiConfig.httpPort, router)
 
   private def prepareEspresso(orderId: Long): Future[Espresso] =
-    for {
-      ground       <- espressoClient.grind(CoffeeBeans("arabica beans"))
-      tampedCoffee <- espressoClient.tamp(ground)
-      espresso     <- espressoClient.brew(tampedCoffee)
-    } yield Espresso(s"order #$orderId: ${espresso.value}")
+    Future.failed(new NotImplementedError)
 
-  private def prepareCappuccinoSequentially(orderId: Long): Future[Cappuccino] =
-    for {
-      ground       <- espressoClient.grind(CoffeeBeans("arabica beans"))
-      tampedCoffee <- espressoClient.tamp(ground)
-      espresso     <- espressoClient.brew(tampedCoffee)
-      foam         <- foamClient.foam(FoamableLiquid("oat milk"))
-    } yield combine(orderId, espresso, foam)
-
-  private def combine(
-      orderId: Long,
-      espresso: Espresso,
-      foam: Foam
-  ): Cappuccino = {
-    println(s"[${threadName()}] combining ${espresso.value} and ${foam.value}")
-    Cappuccino(
-      s"order #$orderId: cappuccino from ${espresso.value} and ${foam.value}"
-    )
-  }
+  private def prepareCappuccino(orderId: Long): Future[Cappuccino] =
+    Future.failed(new NotImplementedError)
 }

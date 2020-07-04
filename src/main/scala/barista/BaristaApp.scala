@@ -1,4 +1,4 @@
-package cappuccino
+package barista
 
 object BaristaApp extends App {
   val apiConfig = ApiConfig(

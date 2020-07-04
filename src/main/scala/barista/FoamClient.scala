@@ -1,14 +1,14 @@
-package cappuccino
+package barista
 
 import httpclient.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-private[cappuccino] final case class FoamableLiquid(value: String)
-private[cappuccino] final case class Foam(value: String)
+final case class FoamableLiquid(value: String)
+final case class Foam(value: String)
 
-private[cappuccino] final class FoamClient(baseUrl: String) {
+final class FoamClient(baseUrl: String) {
   private val httpClient = new HttpClient(baseUrl)
 
   def foam(liquid: FoamableLiquid): Future[Foam] =
