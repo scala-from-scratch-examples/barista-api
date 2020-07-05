@@ -10,6 +10,8 @@ import _root_.concurrent.threadName
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success}
 
+import HttpClient.logRequestResponse
+
 final class HttpClient(baseUrl: String) {
   private val client = java.net.http.HttpClient
     .newBuilder()
@@ -43,11 +45,11 @@ final class HttpClient(baseUrl: String) {
   private def sendRequest(
       request: HttpRequest
   ): Future[HttpResponse[String]] = {
-    println(s"[${threadName()}] request ${request.method()} ${request.uri().getPath()}")
+    logRequestResponse(request, "request")
     def responseFuture  = client.sendAsync(request, BodyHandlers.ofString())
     val responsePromise = Promise[HttpResponse[String]]()
     responseFuture.whenComplete { (response, throwable) =>
-      println(s"[${threadName()}] response ${request.method()} ${request.uri().getPath()}")
+      logRequestResponse(request, "response")
       if (throwable != null)
         responsePromise.complete(Failure(throwable))
       else responsePromise.complete(Success(response))
@@ -66,4 +68,12 @@ object HttpClient {
     }
   def encode(urlPart: String): String =
     java.net.URLEncoder.encode(urlPart, "UTF-8")
+
+  private def logRequestResponse(
+      request: HttpRequest,
+      label: String
+  ): Unit = {
+    val pathSuffix = request.uri().getPath().split('/').last
+    println(s"[${threadName()}] $label ${request.method()} $pathSuffix")
+  }
 }
