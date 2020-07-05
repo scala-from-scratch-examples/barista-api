@@ -53,8 +53,10 @@ class Server(port: Int, router: Router) extends Closeable {
   println(s"Server ready and listening on port $port")
 
   override def close(): Unit = {
+    print("Server shutting down... ")
     server.stop(2)
     executor.shutdown()
+    println("bye!")
   }
 }
 object Server {
