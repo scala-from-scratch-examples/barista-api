@@ -4,6 +4,7 @@ import java.net._
 import java.net.http.HttpRequest.BodyPublishers
 import java.net.http.HttpResponse.BodyHandlers
 import java.net.http._
+import java.net.http.{HttpClient => JavaHttpClient}
 import java.time.Duration
 import _root_.concurrent.threadName
 
@@ -13,7 +14,7 @@ import scala.util.{Failure, Success}
 import HttpClient.logRequestResponse
 
 final class HttpClient(baseUrl: String) {
-  private val client = java.net.http.HttpClient
+  private val client = JavaHttpClient
     .newBuilder()
     .connectTimeout(Duration.ofSeconds(2))
     .build()
